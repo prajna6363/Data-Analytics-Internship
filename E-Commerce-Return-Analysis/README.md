@@ -1,41 +1,53 @@
-# HR Analytics – Employee Attrition Prediction
+
+# E-Commerce Return Rate — `E-Commerce-Return-Analysis/README.md`
+
+```markdown
+# E-Commerce Return Rate Reduction Analysis
 
 ## 📌 Project Overview
 
-This project analyzes employee data to understand employee attrition patterns and identify factors associated with employees leaving an organization.
+This project analyzes e-commerce order and return data to understand return patterns and identify areas that may contribute to higher return rates.
 
-The project uses **Python, Machine Learning, and Power BI** to perform data cleaning, exploratory analysis, employee attrition prediction, and dashboard visualization.
+The project combines **Python, SQL, Machine Learning, and Power BI** to analyze returns, estimate return risk, identify high-risk products, and present business insights through an interactive dashboard.
 
 ---
 
 ## 🎯 Objectives
 
-- Analyze employee attrition patterns.
-- Identify important factors associated with employee attrition.
-- Perform data cleaning and preprocessing.
-- Explore relationships between employee characteristics and attrition.
-- Build machine learning models to predict employee attrition.
-- Create an interactive Power BI dashboard for HR insights.
+- Analyze overall e-commerce return rates.
+- Compare return rates across product categories and locations.
+- Analyze return rates by shipping method.
+- Identify the most common return reasons.
+- Build a machine learning model to estimate return probability.
+- Generate return risk scores.
+- Identify high-risk products.
+- Create an interactive Power BI dashboard.
 
 ---
 
 ## 📊 Dataset
 
-The dataset contains **1,470 employee records and 35 columns**.
+The dataset contains **5,000 orders and 23 columns**.
 
-The dataset includes information related to:
+The dataset includes information about:
 
-- Employee demographics
-- Job roles
-- Department
-- Monthly income
-- Job satisfaction
-- Overtime
-- Business travel
-- Years of experience
-- Work-life balance
-- Years at company
-- Employee attrition
+- Orders
+- Products
+- Customers
+- Product categories
+- Pricing
+- Discounts
+- Shipping methods
+- Payment methods
+- Return status
+- Return reasons
+- Return costs
+- Profit/Loss
+- Sustainability measures
+
+### Important Features
+
+`Product_Category`, `Product_Price`, `Order_Quantity`, `Discount_Applied`, `Shipping_Method`, `Payment_Method`, `User_Age`, `User_Gender`, `User_Location`, `Return_Status`, `Return_Reason`, `Order_Value`, `Return_Cost`, `Profit_Loss`
 
 ---
 
@@ -47,79 +59,104 @@ The dataset includes information related to:
 - Matplotlib
 - Seaborn
 - Scikit-learn
+- MySQL
+- SQL
 - Power BI
 - Jupyter Notebook
 
 ---
 
-## 🔍 Data Cleaning & Preprocessing
+## 🔍 Data Cleaning & EDA
 
-The dataset was checked for missing values and duplicate records.
+The dataset was checked for:
 
-The following unnecessary columns were removed:
+- Missing values
+- Duplicate records
+- Data types
+- Return status distribution
 
-- EmployeeCount
-- EmployeeNumber
-- Over18
-- StandardHours
+No missing values or duplicate records were found.
 
-The target variable `Attrition` was encoded as:
-
-- No → 0
-- Yes → 1
-
-Categorical variables were converted using one-hot encoding before model training.
-
----
-
-## 📈 Exploratory Data Analysis
-
-The analysis explored employee attrition based on:
-
-- Department
-- Job Role
-- Overtime
-- Business Travel
-- Job Satisfaction
-- Work-Life Balance
-- Age
-- Monthly Income
-- Years at Company
+The `Order_Date` column was converted into datetime format for date-based analysis.
 
 ### Key Findings
 
-- Total employees: **1,470**
-- Employees who left: **237**
-- Overall attrition rate: **16.12%**
-- Research & Development had the highest number of employees leaving.
-- Overtime was common among employees who left.
-- Employee income, age, experience, and other features were used as predictive signals by the machine learning model.
+- Total orders: **5,000**
+- Returned orders: **1,450**
+- Overall return rate: **29%**
+- Clothing had the highest return rate at **37.43%**.
+- Defective was the most common return reason, followed by Changed Mind.
+- Return rates across shipping methods were relatively similar.
+
+---
+
+## 🗄️ SQL Analysis
+
+The dataset was imported into MySQL as:
+
+`ecommerce_returns`
+
+SQL was used to analyze:
+
+- Overall return rate
+- Return rate by product category
+- Return rate by shipping method
+- Return reasons
+- Top locations by return rate
+- Monthly return trends
 
 ---
 
 ## 🤖 Machine Learning
 
-Two classification models were evaluated:
+A **Logistic Regression** model was developed to estimate the probability that an order would be returned.
 
-### Logistic Regression
+### Features Used
+
+- Product Category
+- Product Price
+- Order Quantity
+- Discount Applied
+- Shipping Method
+- Payment Method
+- User Age
+- User Gender
+- User Location
+- Order Value
+- CO2 Emissions
+- Packaging Waste
+
+Post-return information such as `Return_Reason`, `Days_to_Return`, `Return_Cost`, `Profit_Loss`, `CO2_Saved`, and `Waste_Avoided` was excluded from the model to reduce data leakage.
+
+### Model Performance
 
 | Metric | Score |
 |---|---:|
-| Accuracy | 86.1% |
-| Precision | 61.5% |
-| Recall | 34.0% |
-| F1 Score | 43.8% |
+| Accuracy | 70.3% |
+| ROC-AUC | 59.48% |
+| Return Class Recall | 3% |
 
-### Random Forest
+The model showed limited ability to identify returned orders. Therefore, the predicted probability is treated as a **risk indicator rather than a definitive prediction**.
 
-| Metric | Score |
-|---|---:|
-| Accuracy | 82.7% |
-| Precision | 33.3% |
-| Recall | 8.5% |
-| F1 Score | 13.6% |
+---
 
-Logistic Regression performed better on the evaluated metrics, particularly for identifying employees in the attrition class.
+## ⚠️ High-Risk Product Analysis
+
+A return risk score was generated using the model's predicted probability.
+
+Products were analyzed based on:
+
+- Total Orders
+- Returned Orders
+- Return Rate
+- Average Risk Score
+- Average Order Value
+
+Products with at least **5 orders** were included in the high-risk product analysis.
+
+The results were exported to:
+
+`High_Risk_Products.csv`
 
 ---
 
@@ -129,34 +166,43 @@ An interactive Power BI dashboard was created with:
 
 ### KPI Cards
 
-- Total Employees
-- Attrition Count
-- Attrition Rate
-- Average Monthly Income
-- Average Age
+- Total Orders
+- Returned Orders
+- Return Rate
+- Average Order Value
+- Total Return Cost
 
 ### Visualizations
 
-- Attrition Count by Department
-- Attrition by Overtime
-- Attrition Count by Job Role
-- Attrition by Job Satisfaction
-- Attrition by Business Travel
-- Average Age vs Monthly Income by Attrition
+- Return Rate by Product Category
+- Return Reasons
+- Monthly Return Rate Trend
+- Return Rate by Shipping Method
+- Top 10 Locations by Return Rate
 
 ### Filters
 
-- Attrition Status
-- Department
-- Overtime
+- Product Category
+- Shipping Method
+- Return Status
+
+---
+
+## 💡 Key Insights
+
+- The overall return rate was **29%**.
+- **Clothing** had the highest return rate at **37.43%**.
+- **Defective** and **Changed Mind** were the most common return reasons.
+- Shipping methods showed relatively small differences in return rates.
+- Some locations had higher return percentages, although locations with fewer orders should be interpreted carefully.
 
 ---
 
 ## 💡 Conclusion
 
-The project demonstrates how employee data can be analyzed using Python and Power BI to understand attrition patterns.
+The project demonstrates how Python, SQL, Machine Learning, and Power BI can be combined to analyze e-commerce returns and generate business insights.
 
-Machine learning models were also evaluated to estimate employee attrition. The analysis can help identify patterns in employee turnover and provide HR teams with data-driven insights.
+The analysis identifies product categories, return reasons, locations, and other areas that can be monitored to better understand and potentially reduce return rates.
 
 ---
 
